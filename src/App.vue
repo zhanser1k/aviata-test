@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import TicketsList from "./components/TicketsList.vue";
+import TicketsList from "./components/TicketsList";
 import axios from "axios";
 
 export default {
@@ -34,8 +34,10 @@ export default {
 </script>
 
 <style>
+@import "~animate.css";
 body {
   background: #dff0ff;
+  overflow-y: scroll;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

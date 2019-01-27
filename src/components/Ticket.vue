@@ -1,10 +1,11 @@
 <template>
   <div class="ticket">
-    <div class="ticket__airline-image ticket_cell ticket_cell_first">
+    <div class="ticket__airline ticket_cell ticket_cell_first">
       <img
+        class="ticket__airline__image"
         v-for="(flight, index) in ticket.flights"
         v-bind:key="`flight-${index}`"
-        :src="`../assets/images/${flight.airline.code}.png`"
+        :src="getAirlineImg(flight.airline.code)"
         alt=""
       />
     </div>
@@ -16,7 +17,9 @@
       }}
     </div>
     <div class="ticket__select-time ticket_cell_large">
-      <span class="ticket_link">Выбрать другое время</span>
+      <span class="ticket_link ticket_link_another-time">
+        Выбрать другое время
+      </span>
       <div class="ticket__share">
         <a class="ticket_link" href="#">Поделиться</a>
       </div>
@@ -42,16 +45,17 @@ export default {
   computed: {
     flightTiming: function() {
       const flights = this.ticket.flights;
-      return `<span class="ticket__arrival-time_first_time">${
+      return `<span style="font-weight: bold">${
         flights[0].departureTime
-      }</span> - <span class="ticket__arrival-time_second-time">${
-        flights[flights.length - 1].arrivalTime
-      }</span>`;
+      }</span> - ${flights[flights.length - 1].arrivalTime}`;
     }
   },
   methods: {
     formatFlightDuration: function(minutes) {
       return `${Math.trunc(minutes / 60)}ч ${minutes % 60}м`;
+    },
+    getAirlineImg: function(airlineCode) {
+      return require("../assets/images/" + airlineCode + ".png");
     }
   }
 };
@@ -64,7 +68,9 @@ export default {
   width: 1000px;
   justify-content: flex-start;
   background: white;
-  padding: 15px 20px 55px;
+  padding: 20px 0 10px 15px;
+  max-height: 125px;
+  min-height: 100px;
   font-size: 12px;
   line-height: 1.7;
   color: #212c5b;
@@ -80,12 +86,14 @@ export default {
 .ticket_cell:nth-child(5) {
   width: 80px;
 }
-.ticket__airline-image {
+.ticket__airline {
+  margin-top: -5px;
   display: flex;
   flex-flow: column wrap;
 }
 .ticket_link {
   text-decoration: none;
+  cursor: pointer;
   font-size: 12px;
   text-align: left;
   border-bottom: 1px dashed #9ea3b7;
@@ -93,10 +101,6 @@ export default {
 }
 .ticket_cell_large {
   width: 178px;
-}
-.ticket__arrival-time_first_time {
-  font-weight: bold;
-  font-size: 22px;
 }
 .ticket__action__btn {
   width: 177px;
@@ -115,5 +119,26 @@ export default {
 }
 .ticket__action_floating {
   margin-left: 100px;
+}
+.ticket__airline__image {
+  width: 100px;
+}
+.ticket__airline__image:first-child {
+  margin-bottom: 5px;
+}
+.ticket__select-time {
+  position: relative;
+}
+.ticket_link_another-time:after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 8px;
+  top: 9px;
+  right: 38px;
+  height: 4px;
+  background: url("../assets/images/icons/dropdown-arrow.svg") no-repeat;
+  -webkit-background-size: 8px 4px;
+  background-size: 8px 4px;
 }
 </style>

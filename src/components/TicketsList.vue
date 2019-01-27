@@ -1,6 +1,24 @@
 <template>
   <div class="tickets-list">
-    <div class="filters"></div>
+    <div class="filters">
+      <div class="filters__airlines">
+        <dropdown-filter :options="options" @option-click="updateTicketsInfo">
+          <template slot="label">
+            <span class="filters__dropdown">Авиакомпании</span>
+          </template>
+        </dropdown-filter>
+      </div>
+      <div class="filters__only_direct-flights">
+        <label>
+          <input
+            type="checkbox"
+            v-model="onlyDirectFlights"
+            :value="onlyDirectFlights"
+          />
+          Только прямые рейсы
+        </label>
+      </div>
+    </div>
     <div class="tickets-list__header">
       <p class="tickets-list_cell tickets-list__header_cell_first">
         Авиакомпания
@@ -10,23 +28,74 @@
       <p class="tickets-list_cell">Вылет - прилет</p>
       <p class="tickets-list_cell">Время в пути</p>
     </div>
-    <ticket
-      v-for="(ticket, index) in tickets"
-      :ticket="ticket"
-      v-bind:key="`ticket-${index}`"
-    />
+    <transition-group
+      name="custom-classes-transition"
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
+    >
+      <ticket
+        v-for="(ticket, index) in filteredTickets"
+        :ticket="ticket"
+        v-bind:key="`ticket-${index}`"
+      />
+    </transition-group>
   </div>
 </template>
 
 <script>
-import Ticket from "./Ticket.vue";
+import Ticket from "./Ticket";
+import DropdownFilter from "./DropdownFilter";
 export default {
   name: "TicketsList",
+  data() {
+    return {
+      options: [
+        {
+          title: "Air Astana",
+          value: "KC"
+        },
+        {
+          title: "Bek Air",
+          value: "Z9"
+        },
+        {
+          title: "Scat",
+          value: "DV"
+        },
+        {
+          title: "S7 Airlines",
+          value: "S7"
+        }
+      ],
+      checkedOptions: [],
+      onlyDirectFlights: false
+    };
+  },
   props: {
     tickets: Array
   },
   components: {
+    DropdownFilter,
     Ticket
+  },
+  computed: {
+    filteredTickets() {
+      if (!this.checkedOptions.length) {
+        return this.tickets;
+      }
+      return this.tickets.filter(ticket => {
+        let result = null;
+        ticket.flights.forEach(flight => {
+          result = this.checkedOptions.includes(flight.airline.code);
+        });
+        return result;
+      });
+    }
+  },
+  methods: {
+    updateTicketsInfo: function(values) {
+      this.checkedOptions = values;
+    }
   }
 };
 </script>
@@ -67,5 +136,31 @@ export default {
 
 .tickets-list_cell_large {
   width: 178px;
+}
+
+.filters {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.filters__airlines {
+  position: relative;
+}
+
+.filters__dropdown:after {
+  content: "";
+  position: absolute;
+  display: block;
+  background: url("../assets/images/icons/dropdown-arrow-up.svg") no-repeat;
+  transform: rotate(180deg);
+  background-size: 11px 6px;
+  width: 11px;
+  height: 6px;
+  top: 5px;
+  left: 115px;
+}
+
+.filters__only_direct-flights {
+  margin-left: 70px;
 }
 </style>
