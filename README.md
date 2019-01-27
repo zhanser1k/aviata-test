@@ -1,5 +1,6 @@
 # aviata-test
 ##### Тестовый проект на позицию front-end
+[Демо](https://zhanser1k.github.io/aviata-test/)
 
 ## Project setup
 ```
