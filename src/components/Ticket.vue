@@ -40,10 +40,13 @@
 export default {
   name: "Ticket",
   props: {
-    ticket: Object
+    ticket: {
+      type: Object,
+      required: true
+    }
   },
   computed: {
-    flightTiming: function() {
+    flightTiming() {
       const flights = this.ticket.flights;
       return `<span style="font-weight: bold">${
         flights[0].departureTime
@@ -51,10 +54,10 @@ export default {
     }
   },
   methods: {
-    formatFlightDuration: function(minutes) {
+    formatFlightDuration(minutes) {
       return `${Math.trunc(minutes / 60)}ч ${minutes % 60}м`;
     },
-    getAirlineImg: function(airlineCode) {
+    getAirlineImg(airlineCode) {
       return require("../assets/images/" + airlineCode + ".png");
     }
   }
@@ -135,7 +138,7 @@ export default {
   display: block;
   width: 8px;
   top: 9px;
-  right: 38px;
+  right: 35px;
   height: 4px;
   background: url("../assets/images/icons/dropdown-arrow.svg") no-repeat;
   -webkit-background-size: 8px 4px;

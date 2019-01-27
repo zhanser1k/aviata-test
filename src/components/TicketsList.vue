@@ -2,16 +2,20 @@
   <div class="tickets-list">
     <div class="filters">
       <div class="filters__airlines">
-        <dropdown-filter :options="options" @option-click="updateTicketsInfo">
+        <dropdown-filter
+          :options="filterOptions"
+          @option-click="updateTicketsInfo"
+        >
           <template slot="label">
-            <span class="filters__dropdown">Авиакомпании</span>
+            Авиакомпании
           </template>
         </dropdown-filter>
       </div>
-      <div class="filters__only_direct-flights">
-        <label>
+      <div class="filters__only_direct">
+        <label class="filters__only-direct_label">
           <input
             type="checkbox"
+            class="filters__checkbox"
             v-model="onlyDirectFlights"
             :value="onlyDirectFlights"
           />
@@ -34,7 +38,7 @@
       leave-active-class="animated fadeOut"
     >
       <ticket
-        v-for="(ticket, index) in filteredTickets"
+        v-for="(ticket, index) in getOnlyDirectFlights"
         :ticket="ticket"
         v-bind:key="`ticket-${index}`"
       />
@@ -49,7 +53,7 @@ export default {
   name: "TicketsList",
   data() {
     return {
-      options: [
+      filterOptions: [
         {
           title: "Air Astana",
           value: "KC"
@@ -72,7 +76,10 @@ export default {
     };
   },
   props: {
-    tickets: Array
+    tickets: {
+      type: Array,
+      required: true
+    }
   },
   components: {
     DropdownFilter,
@@ -90,10 +97,19 @@ export default {
         });
         return result;
       });
+    },
+    getOnlyDirectFlights() {
+      if (this.onlyDirectFlights) {
+        return this.filteredTickets.filter(ticket => {
+          return ticket.flights.length === 1;
+        });
+      } else {
+        return this.filteredTickets;
+      }
     }
   },
   methods: {
-    updateTicketsInfo: function(values) {
+    updateTicketsInfo(values) {
       this.checkedOptions = values;
     }
   }
@@ -141,26 +157,56 @@ export default {
 .filters {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .filters__airlines {
   position: relative;
 }
 
-.filters__dropdown:after {
-  content: "";
-  position: absolute;
-  display: block;
-  background: url("../assets/images/icons/dropdown-arrow-up.svg") no-repeat;
-  transform: rotate(180deg);
-  background-size: 11px 6px;
-  width: 11px;
-  height: 6px;
-  top: 5px;
-  left: 115px;
+.filters__only_direct {
+  margin-left: 70px;
 }
 
-.filters__only_direct-flights {
-  margin-left: 70px;
+.filters__checkbox {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: 1px solid #212c5b;
+  padding: 9px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.filters__checkbox:checked {
+  background-color: #212c5b;
+  color: #ffffff;
+}
+
+.filters__checkbox:checked:after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  background: url("../assets/images/icons/check.svg") no-repeat;
+  background-size: 15px 10px;
+  width: 15px;
+  height: 10px;
+}
+
+.filters__checkbox:focus {
+  outline: 0;
+}
+
+.filters__airlines {
+  font-size: 14px;
+}
+
+.filters__only-direct_label {
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>

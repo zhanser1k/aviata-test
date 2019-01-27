@@ -35,15 +35,18 @@ export default {
 
 <style>
 @import "~animate.css";
+@import "./assets/css/fonts.css";
+
 body {
   background: #dff0ff;
   overflow-y: scroll;
 }
+
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #212c5b;
-  margin-top: 200px;
+  margin-top: 170px;
 }
 </style>

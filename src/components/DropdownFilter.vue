@@ -1,33 +1,43 @@
 <template>
-  <div class="dropdown" :class="{ 'dropdown--is-open': isOpen }" @click.stop>
+  <div class="dropdown" @click.stop>
     <div class="dropdown__label" @click="toggle">
-      <slot name="label"></slot>
+      <span
+        class="dropdown__label__text"
+        :class="{ 'dropdown__is-open': isOpen }"
+        ><slot name="label"></slot
+      ></span>
     </div>
-    <div v-show="isOpen" class="dropdown__options">
-      <label class="dropdown__option">
-        <input
-          class="dropdown__checkbox"
-          type="checkbox"
-          v-model="selectAll"
-          @change="$emit('option-click', checkedOptions)"
-        />
-        Все
-      </label>
-      <label
-        class="dropdown__option"
-        v-for="(option, index) in options"
-        :key="`option-${index}`"
-      >
-        <input
-          type="checkbox"
-          class="dropdown__checkbox"
-          v-model="checkedOptions"
-          :value="option.value"
-          @change="$emit('option-click', checkedOptions)"
-        />
-        {{ option.title }}
-      </label>
-    </div>
+    <transition
+      name="custom-classes-transition1"
+      enter-active-class="animated fadeIn faster"
+      leave-active-class="animated fadeOut faster"
+    >
+      <div v-show="isOpen" class="dropdown__options">
+        <label class="dropdown__option">
+          <input
+            class="dropdown__checkbox"
+            type="checkbox"
+            v-model="selectAll"
+            @change="$emit('option-click', checkedOptions)"
+          />
+          Все
+        </label>
+        <label
+          class="dropdown__option"
+          v-for="(option, index) in options"
+          :key="`option-${index}`"
+        >
+          <input
+            type="checkbox"
+            class="dropdown__checkbox"
+            v-model="checkedOptions"
+            :value="option.value"
+            @change="$emit('option-click', checkedOptions)"
+          />
+          {{ option.title }}
+        </label>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -48,12 +58,12 @@ export default {
   },
   computed: {
     selectAll: {
-      get: function() {
+      get() {
         return this.options
           ? this.checkedOptions.length === this.options.length
           : false;
       },
-      set: function(value) {
+      set(value) {
         let checkedOptions = [];
 
         if (value) {
@@ -67,17 +77,17 @@ export default {
     }
   },
   methods: {
-    toggle: function() {
+    toggle() {
       this.isOpen = !this.isOpen;
     }
   },
-  created: function() {
+  created() {
     const vm = this;
     document.addEventListener("click", function() {
       vm.isOpen = false;
     });
   },
-  mounted: function() {
+  mounted() {
     this.selectAll = true;
   }
 };
@@ -87,7 +97,7 @@ export default {
 .dropdown {
   position: relative;
   display: block;
-  margin: 1em;
+  margin: 1em 0;
 }
 
 .dropdown__label,
@@ -100,11 +110,13 @@ export default {
   -ms-user-select: none;
   user-select: none;
 }
+
 .dropdown__options {
   z-index: 10;
   position: absolute;
   top: 100%;
   left: 0;
+  padding: 10px 0;
   border-radius: 8px;
   min-width: 100%;
   background-color: #fff;
@@ -115,6 +127,7 @@ export default {
   display: block;
   width: 170px;
   height: 35px;
+  padding-left: 10px;
   line-height: 35px;
   font-size: 14px;
   position: relative;
@@ -125,15 +138,15 @@ export default {
 }
 
 .dropdown__checkbox {
+  display: inline-block;
+  vertical-align: middle;
   -webkit-appearance: none;
   background-color: #fafafa;
   border: 1px solid #fe9922;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),
-    inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
   padding: 9px;
   border-radius: 5px;
-  display: inline-block;
   position: relative;
+  margin-right: 10px;
 }
 
 .dropdown__checkbox:checked {
@@ -143,7 +156,6 @@ export default {
 
 .dropdown__checkbox:checked:after {
   content: "";
-  display: block;
   position: absolute;
   top: 5px;
   left: 2px;
@@ -151,6 +163,23 @@ export default {
   background-size: 15px 10px;
   width: 15px;
   height: 10px;
+}
+
+.dropdown__label__text:after {
+  content: "";
+  position: absolute;
+  background: url("../assets/images/icons/dropdown-arrow-up.svg") no-repeat;
+  transform: rotate(180deg);
+  transition: 300ms;
+  background-size: 11px 6px;
+  width: 11px;
+  height: 6px;
+  top: 7px;
+  left: 107px;
+}
+
+.dropdown__is-open:after {
+  transform: rotate(0);
 }
 
 .dropdown__checkbox:focus {
