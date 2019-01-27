@@ -33,9 +33,10 @@
       <p class="tickets-list_cell">Время в пути</p>
     </div>
     <transition-group
-      name="custom-classes-transition"
+      name="tickets-list-transition"
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
+      v-if="getOnlyDirectFlights"
     >
       <ticket
         v-for="(ticket, index) in getOnlyDirectFlights"
@@ -43,6 +44,16 @@
         v-bind:key="`ticket-${index}`"
       />
     </transition-group>
+    <transition
+      name="no-results-text-transition"
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut"
+      v-if="!getOnlyDirectFlights"
+    >
+      <div class="no-results">
+        <p class="no-results__text">Нет результатов</p>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -88,7 +99,7 @@ export default {
   computed: {
     filteredTickets() {
       if (!this.checkedOptions.length) {
-        return this.tickets;
+        return;
       }
       return this.tickets.filter(ticket => {
         let result = null;
@@ -208,5 +219,17 @@ export default {
 .filters__only-direct_label {
   cursor: pointer;
   font-size: 14px;
+}
+.no-results {
+  background: white;
+  height: 100px;
+  width: 100%;
+}
+.no-results__text {
+  font-size: 22px;
+  font-weight: 300;
+  text-align: center;
+  margin: 0;
+  padding: 30px 0 30px;
 }
 </style>

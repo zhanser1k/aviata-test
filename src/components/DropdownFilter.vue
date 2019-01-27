@@ -8,7 +8,7 @@
       ></span>
     </div>
     <transition
-      name="custom-classes-transition1"
+      name="dropdown-transition"
       enter-active-class="animated fadeIn faster"
       leave-active-class="animated fadeOut faster"
     >
@@ -89,6 +89,7 @@ export default {
   },
   mounted() {
     this.selectAll = true;
+    this.$emit("option-click", this.checkedOptions);
   }
 };
 </script>

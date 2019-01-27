@@ -1,6 +1,11 @@
 # aviata-test
+##### Тестовый проект на позицию front-end
 
 ## Project setup
+```
+yarn
+```
+or
 ```
 yarn install
 ```
