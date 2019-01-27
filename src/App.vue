@@ -1,28 +1,47 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <tickets-list :tickets="tickets" />
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import TicketsList from "./components/TicketsList.vue";
+import axios from "axios";
 
 export default {
   name: "app",
   components: {
-    HelloWorld
+    TicketsList
+  },
+
+  data() {
+    return {
+      tickets: []
+    };
+  },
+
+  created() {
+    axios
+      .get("./data.json")
+      .then(response => {
+        this.tickets = response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
   }
 };
 </script>
 
 <style>
+body {
+  background: #dff0ff;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #212c5b;
+  margin-top: 200px;
 }
 </style>
